@@ -2,11 +2,440 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Semi-Supervised IDM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semi-Supervised IDM: Labeling Human Videos with Robot Actions</title>
+  <meta name="description" content="Semi-Supervised Inverse Dynamics Models co-train an IDM on action-labeled robot data and pseudo-labeled human videos, recovering metric robot actions from unlabeled human videos.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Semi-Supervised Inverse Dynamics Models">
+  <meta property="og:description" content="Labeling human videos with robot actions by co-training an IDM on robot actions and human pseudo-actions.">
+  <meta property="og:url" content="https://semi-supervised-idm.github.io/">
+  <meta property="og:image" content="https://semi-supervised-idm.github.io/assets/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f2a44'/%3E%3Ccircle cx='26' cy='36' r='15' fill='%23f2cc5b'/%3E%3Ccircle cx='40' cy='28' r='11' fill='%235aa1f2' fill-opacity='.92'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>document.documentElement.classList.add("js");</script>
+  <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-  <h1>Semi-Supervised Inverse Dynamics Model</h1>
-  <p>Labeling Human Videos with Robot Actions</p>
-  <p>Project page coming soon.</p>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>Semi-Supervised Inverse Dynamics Models</h1>
+    <p class="hero-subtitle">Labeling Human Videos with Robot Actions</p>
+
+    <p class="authors">Anonymous Authors</p>
+
+    <nav class="links" aria-label="Publication links">
+      <!-- Replace each disabled <span> with <a class="btn" href="..."> once the link exists. -->
+      <span class="btn is-disabled" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h6"/></svg>
+        Paper <small>soon</small>
+      </span>
+      <span class="btn is-disabled" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l14 16 M19 4L5 20"/></svg>
+        arXiv <small>soon</small>
+      </span>
+      <a class="btn" href="#bibtex">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5H6v5l-2 2 2 2v5h2 M16 5h2v5l2 2-2 2v5h-2"/></svg>
+        BibTeX
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ Animated overview (takes the place of an intro video) ============ -->
+<section class="section demo" aria-label="Animated overview">
+  <div class="scene-card" id="scene-card" data-state="sup">
+    <div class="scene-stage">
+      <svg class="scene" id="scene" viewBox="0 0 480 431" role="img" aria-labelledby="scene-title scene-desc">
+        <title id="scene-title">From a supervised IDM to the Semi-Supervised IDM</title>
+        <desc id="scene-desc">A supervised IDM is trained on labeled robot data and runs inference on unlabeled human videos across an embodiment gap. In the Semi-Supervised IDM, its predictions become pseudo-actions, the IDM is co-trained on both, and the robot and human data overlap.</desc>
+        <defs>
+          <mask id="mask-infer" maskUnits="userSpaceOnUse" x="0" y="0" width="480" height="431">
+            <path class="reveal reveal-infer" pathLength="1" d="M422 256 V309.5 Q422 315.5 416 315.5 H258"/>
+          </mask>
+          <mask id="mask-pseudo" maskUnits="userSpaceOnUse" x="0" y="0" width="480" height="431">
+            <path class="reveal reveal-pseudo" pathLength="1" d="M422 256 V363 Q422 369 416 369 H130 Q124 369 124 363 V292"/>
+          </mask>
+        </defs>
+
+        <!-- Title: "Semi-" slides in front of "Supervised IDM" -->
+        <text class="s-title s-title-semi" x="16" y="41.6">Semi-</text>
+        <text class="s-title s-title-sup" x="16" y="41.6">Supervised IDM</text>
+
+        <!-- Human videos: dashed outline, dots turn from unlabeled (dark) to pseudo-labeled (gold) -->
+        <g class="human">
+          <path class="human-blob" d="M64 319 C172 319 172 243 280 243 L232 343 C124 343 124 419 16 419 Z"/>
+          <g class="dots">
+            <circle cx="56.5"  cy="393.8" r="4" style="--i:13;--dx:0px;--dy:0px"/>
+            <circle cx="128.5" cy="331"   r="4" style="--i:8;--dx:-8.2px;--dy:3.2px"/>
+            <circle cx="178.1" cy="313.1" r="4" style="--i:4;--dx:0px;--dy:0px"/>
+            <circle cx="117.6" cy="362.3" r="4" style="--i:9;--dx:-8.5px;--dy:-4.8px"/>
+            <circle cx="200.5" cy="288.1" r="4" style="--i:3;--dx:-2.4px;--dy:-1.8px"/>
+            <circle cx="201.6" cy="318"   r="4" style="--i:1;--dx:10.6px;--dy:7.1px"/>
+            <circle cx="92.8"  cy="362.1" r="4" style="--i:11;--dx:-5.2px;--dy:-2.1px"/>
+            <circle cx="167.4" cy="335.2" r="4" style="--i:5;--dx:-7.7px;--dy:-32.3px"/>
+            <circle cx="222.2" cy="270.5" r="4" style="--i:2;--dx:0px;--dy:0px"/>
+            <circle cx="82.8"  cy="387.3" r="4" style="--i:12;--dx:0px;--dy:0px"/>
+            <circle cx="99.9"  cy="331.8" r="4" style="--i:10;--dx:0px;--dy:0px"/>
+            <circle cx="151.3" cy="314.5" r="4" style="--i:6;--dx:-2.5px;--dy:-4.1px"/>
+            <circle cx="148"   cy="350"   r="4" style="--i:7;--dx:-25.7px;--dy:23.3px"/>
+            <circle cx="224.5" cy="297.9" r="4" style="--i:0;--dx:3.4px;--dy:3.3px"/>
+          </g>
+        </g>
+
+        <!-- Robot data: dashed outline with labeled samples (triangles) -->
+        <g class="robot">
+          <path class="robot-blob" d="M140 152.6 C192 152.6 192 120.6 244 120.6 L220 164.6 C168 164.6 168 196.6 116 196.6 Z"/>
+          <g class="tris">
+            <path d="M210.5 145.8 l5.6 8.3 h-11.1 z"/>
+            <path d="M143.8 170.5 l5.6 8.3 h-11.1 z"/>
+            <path d="M176.3 155 l5.6 8.3 h-11.1 z"/>
+            <path d="M189.5 142.9 l5.6 8.3 h-11.1 z"/>
+            <path d="M159.5 161.8 l5.6 8.3 h-11.1 z"/>
+            <path d="M218.5 127.3 l5.6 8.3 h-11.1 z"/>
+          </g>
+        </g>
+
+        <!-- IDM -->
+        <rect class="idm-box" x="380" y="204" width="84" height="50" rx="5"/>
+        <text class="s-idm" x="422" y="239.6" text-anchor="middle">IDM</text>
+
+        <!-- Supervised state -->
+        <g class="only-sup labels-sup">
+          <text x="132" y="108.2"><tspan class="s-robot">Robot</tspan><tspan class="s-note" dx="6">labeled</tspan></text>
+          <text x="154" y="412.6"><tspan class="s-human">Human</tspan><tspan class="s-note" dx="8">unlabeled</tspan></text>
+        </g>
+        <g class="only-sup gap">
+          <g class="gap-arrow">
+            <path class="gap-line" d="M207 178.8 V245.7"/>
+            <path class="gap-head" d="M207 172 l3 6.8 h-6 z M207 252.5 l-3 -6.8 h6 z"/>
+          </g>
+          <text class="s-gap" x="128" y="226.7" text-anchor="middle">embodiment</text>
+          <text class="s-gap" x="128" y="257.7" text-anchor="middle">gap</text>
+        </g>
+        <g class="only-sup train">
+          <path class="line draw draw-train" pathLength="1" d="M245 142.5 H416 Q422 142.5 422 148.5 V195"/>
+          <path class="head head-train" d="M418 193 h8 l-4 9 z"/>
+          <text class="s-arrow-label" x="297.5" y="175.2">Train</text>
+        </g>
+        <g class="only-sup infer">
+          <path class="line dashed" mask="url(#mask-infer)" d="M422 256 V309.5 Q422 315.5 416 315.5 H259"/>
+          <path class="head head-infer" d="M260.2 311.5 l-9 4 l9 4 z"/>
+          <text class="s-arrow-label" x="281" y="303.2">Inference</text>
+        </g>
+
+        <!-- Semi-supervised state -->
+        <g class="only-semi labels-semi">
+          <text class="s-human" x="204" y="129.6">Human</text>
+          <text class="s-robot" x="201.6" y="268.7">Robot</text>
+        </g>
+        <g class="only-semi cotrain">
+          <path class="line draw draw-cotrain" pathLength="1" d="M246.3 229 H371"/>
+          <path class="head head-cotrain" d="M369 225 l9 4 l-9 4 z"/>
+          <text class="s-arrow-label" x="273.2" y="216.7">Co-train</text>
+        </g>
+        <g class="only-semi pseudo">
+          <path class="line dashed pseudo-line" mask="url(#mask-pseudo)" d="M422 256 V363 Q422 369 416 369 H130 Q124 369 124 363 V293"/>
+          <path class="head head-pseudo" d="M124 285.5 l4 9 h-8 z"/>
+          <text class="s-pseudo" x="184" y="401.7">pseudo-actions</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="scene-side">
+      <div class="scene-toggle" role="group" aria-label="Choose which IDM to show">
+        <button type="button" data-set-state="sup" aria-pressed="true">Supervised IDM</button>
+        <button type="button" data-set-state="semi" aria-pressed="false">Semi-Supervised IDM</button>
+      </div>
+
+      <div class="scene-copy">
+        <div class="scene-copy-item" data-for="sup">
+          <h2>Trained on robot data only</h2>
+          <p>A supervised IDM learns from action-labeled robot data, then runs inference on human videos. The embodiment gap between the two limits its accuracy.</p>
+        </div>
+        <div class="scene-copy-item" data-for="semi">
+          <h2>Co-trained on human videos</h2>
+          <p>Its predictions on human videos become pseudo-actions. A new IDM is co-trained on robot actions and these pseudo-actions, which narrows the gap and improves accuracy on human videos.</p>
+        </div>
+      </div>
+
+      <ul class="scene-legend">
+        <li><svg viewBox="0 0 14 12" aria-hidden="true"><path d="M7 1.5 l5.6 8.3 h-11.2 z" fill="#5aa1f2"/></svg>Robot data with recorded actions</li>
+        <li><svg viewBox="0 0 14 12" aria-hidden="true"><circle cx="7" cy="6" r="4" fill="#292929"/></svg>Human video without actions</li>
+        <li><svg viewBox="0 0 14 12" aria-hidden="true"><circle cx="7" cy="6" r="4" fill="#f2cc5b"/></svg>Human video with pseudo-actions</li>
+      </ul>
+
+      <button type="button" class="scene-play" id="scene-play" aria-pressed="true">
+        <span class="when-playing">Pause animation</span>
+        <span class="when-paused">Play animation</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Overview ============ -->
+<section class="section soft" id="overview">
+  <div class="narrow">
+    <p class="lead">
+      <mark>Unlabeled human videos can improve the IDM that labels them.</mark>
+      A teacher IDM trained on robot data generates pseudo-actions for human videos, and a student IDM is co-trained on robot actions and these pseudo-actions.
+    </p>
+
+    <div class="metrics">
+      <div class="metric">
+        <span class="metric-value">&minus;23%</span>
+        <span class="metric-label">cumulative translation error on human videos, relative to the teacher IDM trained only on robot data</span>
+      </div>
+      <div class="metric">
+        <span class="metric-value">23 <i>&rarr;</i> 66%</span>
+        <span class="metric-label">average progress success rate when the predicted actions are replayed on a real robot</span>
+      </div>
+      <div class="metric">
+        <span class="metric-value">57 <i>vs</i> 70%</span>
+        <span class="metric-label">policy trained only on IDM-labeled human videos, versus the same policy fine-tuned on robot demonstrations</span>
+      </div>
+    </div>
+
+    <h2 class="rule-heading" id="abstract">Abstract</h2>
+    <div class="prose">
+      <p>Human videos are a promising source of diverse and scalable data for vision-based robot learning, but they lack the action labels required to train robot policies. An inverse dynamics model (IDM), which infers the action between consecutive observations, can recover these labels. However, IDMs are typically trained on limited robot datasets, and the embodiment gap between humans and robots limits their accuracy on human videos.</p>
+      <p>In this work, we present the <strong>Semi-Supervised IDM</strong>, which leverages unlabeled human videos during IDM training. We first train a teacher IDM only on robot data to generate pseudo-actions for human videos, and then co-train a student IDM on robot actions and these human pseudo-actions. Across human videos from diverse tasks, the resulting IDM predicts actions closer to tracker-measured ground truth than an IDM trained only on robot data, and it also outperforms latent-action and visual SLAM baselines.</p>
+      <p>This improved accuracy translates directly to real-world execution: replaying the predicted actions on a real robot reproduces the demonstrated tasks. Finally, we demonstrate that a flow-based policy trained only on IDM-labeled human videos achieves real-world manipulation performance approaching that of a policy trained on robot demonstrations. By recovering metric actions from unlabeled human videos, our method makes human video a more practical, scalable data source for robot learning.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Method ============ -->
+<section class="section" id="method">
+  <div class="wrap">
+    <div class="section-heading">
+      <p class="eyebrow">Method</p>
+      <h2>A teacher labels human videos, a student learns from both</h2>
+      <p>Two training stages turn unlabeled human videos into training data for the IDM itself.</p>
+    </div>
+
+    <figure class="figure-card reveal-up">
+      <div class="figure-scroll"><img src="assets/img/overview.webp" width="2200" height="1073" alt="Two-stage training. Stage 1 trains a 2-view teacher IDM on robot data. The frozen teacher then generates pseudo-actions on human data. Stage 2 co-trains a 3-view student IDM on robot and human data." loading="lazy"></div>
+      <figcaption><strong>Two-stage training.</strong> Stage 1 trains a 2-view teacher IDM on robot data using both wrist views. The frozen teacher then predicts pseudo-actions from human videos. Stage 2 co-trains a 3-view student IDM on ground-truth robot actions and human pseudo-actions, using both wrist views and an additional front view.</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li class="reveal-up">
+        <span class="step-number" style="--c: var(--robot)">01</span>
+        <h3>Train a wrist-view teacher</h3>
+        <p>A 2-view teacher IDM is trained on action-labeled robot data using only the two wrist views, which look alike in human and robot recordings.</p>
+      </li>
+      <li class="reveal-up">
+        <span class="step-number" style="--c: var(--human)">02</span>
+        <h3>Generate pseudo-actions</h3>
+        <p>The frozen teacher predicts the action between adjacent frames of each human video. These predictions are the pseudo-actions.</p>
+      </li>
+      <li class="reveal-up">
+        <span class="step-number" style="--c: var(--gap)">03</span>
+        <h3>Co-train a 3-view student</h3>
+        <p>A student IDM with an added front view is trained on robot actions and human pseudo-actions in equal proportion, with noise on the human inputs.</p>
+      </li>
+      <li class="reveal-up">
+        <span class="step-number" style="--c: var(--navy)">04</span>
+        <h3>Label human videos</h3>
+        <p>The student labels human videos with metric actions that a robot can replay directly and a policy can be trained on.</p>
+      </li>
+    </ol>
+
+    <div class="split reveal-up">
+      <div class="split-text">
+        <h3>Handheld grippers that mirror the robot</h3>
+        <p>Humans collect demonstrations with handheld grippers that share the finger design of the robot grippers, with wrist cameras at the same positions relative to the fingers. Both setups record left and right wrist views and a front view of the workspace.</p>
+        <p>The wrist views look alike across the two domains, so an IDM trained on robot wrist views transfers well to human videos. The front view sees a robot arm in one domain and a person in the other.</p>
+      </div>
+      <figure class="figure-card">
+        <img src="assets/img/setup.webp" width="1800" height="960" alt="Human setup with handheld grippers and robot setup with two arms, each recording left wrist, front, and right wrist views." loading="lazy">
+        <figcaption><strong>Workspace setup.</strong> (a) Human setup with handheld grippers and (b) robot setup with Robotiq 2F-85 grippers, with the three views recorded in each.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Action accuracy ============ -->
+<section class="section soft" id="accuracy">
+  <div class="wrap">
+    <div class="section-heading">
+      <p class="eyebrow">Action accuracy</p>
+      <h2>Closer to tracker-measured ground truth</h2>
+      <p>Evaluated on 500 human episodes spanning 200 tasks, with VIVE tracker poses as ground truth, and on 500 held-out robot episodes.</p>
+    </div>
+
+    <figure class="figure-card reveal-up">
+      <div class="figure-scroll"><img src="assets/img/accuracy.webp" width="2400" height="873" alt="Bar charts of translation and rotation error for the teacher and student IDMs on robot and human episodes, and for latent-action and visual SLAM baselines on human episodes." loading="lazy"></div>
+      <figcaption><strong>Action accuracy on human videos and robot data.</strong> Error of each IDM's predicted motion against ground truth on (a) held-out robot episodes and (b) human episodes. (c) Our 3-view student compared with latent-action and visual SLAM methods on the same human episodes. Columns show motion over 1 second and cumulative motion from the first frame. Bars are means over episodes with 95% bootstrap confidence intervals.</figcaption>
+    </figure>
+
+    <div class="findings">
+      <div class="finding reveal-up">
+        <p class="finding-tag">vs. the robot-only teacher</p>
+        <p class="finding-value">&minus;23%</p>
+        <p>Our 3-view student reduces cumulative translation error by 23% on human videos and by 24% on robot data, relative to the 2-view teacher that produced its pseudo-actions.</p>
+      </div>
+      <div class="finding reveal-up">
+        <p class="finding-tag">vs. latent-action models</p>
+        <p class="finding-value">&minus;76%</p>
+        <p>Trained on the same human videos, LAPA and CLAM are less accurate than even the 2-view teacher. Our student reduces cumulative translation error by 76% compared with LAPA.</p>
+      </div>
+      <div class="finding reveal-up">
+        <p class="finding-tag">vs. visual SLAM</p>
+        <p class="finding-value">&minus;60%</p>
+        <p>Our student reduces cumulative translation error by 60% relative to DROID-SLAM. ORB-SLAM3 returns valid poses for only 40% of the 1-second windows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Real-robot evaluation ============ -->
+<section class="section" id="results">
+  <div class="wrap">
+    <div class="section-heading">
+      <p class="eyebrow">Real-robot evaluation</p>
+      <h2>From predicted actions to robot execution</h2>
+      <p>The predicted actions are replayed directly on a robot, and then used to train a policy without any robot demonstrations.</p>
+    </div>
+
+    <section class="result-group" aria-labelledby="replay-heading">
+      <div class="result-head">
+        <h3 id="replay-heading">Robot replay of predicted actions</h3>
+        <p>We replay the actions predicted from human demonstrations on a real robot, aligning only the initial pose. Every later waypoint chains the predicted actions, so errors accumulate without correction. Across Hanging Cup, Cap Removal, and Folding Towel, our 3-view student raises the average progress success rate from 23% with the 2-view teacher to 66%.</p>
+      </div>
+      <figure class="figure-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/replay.webp" width="2400" height="611" alt="Replay progress success rate on three tasks for four IDMs, and frames of a human Hanging Cup demonstration next to its robot replay." loading="lazy"></div>
+        <figcaption><strong>Robot replay of predicted actions.</strong> (a) Progress success rate on three tasks. Each IDM is evaluated on the same five human demonstrations per task, with three replays per demonstration. (b) A human Hanging Cup demonstration and its robot replay.</figcaption>
+      </figure>
+    </section>
+
+    <section class="result-group" aria-labelledby="policy-heading">
+      <div class="result-head">
+        <h3 id="policy-heading">Policy learning from human demonstrations</h3>
+        <p>A flow-based policy is pretrained on 8,000 hours of human demonstrations labeled by our IDM, then fine-tuned on 100 IDM-labeled human demonstrations per task. It uses no robot data in either stage, and reaches an average progress success rate of 57.3 &plusmn; 4.4% across four tasks, close to the 70.0 &plusmn; 3.2% of the same policy fine-tuned on 100 robot demonstrations.</p>
+      </div>
+      <figure class="figure-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/policy.webp" width="2400" height="745" alt="Policy progress success rate on four tasks for policies fine-tuned on human or robot demonstrations, with frames of human demonstrations and policy rollouts." loading="lazy"></div>
+        <figcaption><strong>Downstream policy performance.</strong> (a) Progress success rate of policies fine-tuned on 100 human demonstrations or 100 robot demonstrations, as the mean over three random seeds. (b) A human demonstration used for training and a rollout of the policy trained on human demonstrations, at the same stage of each task.</figcaption>
+      </figure>
+    </section>
+
+    <section class="result-group" aria-labelledby="videos-heading">
+      <div class="gallery-head">
+        <h3 id="videos-heading">Result videos</h3>
+        <div class="filter" role="group" aria-label="Filter result videos">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="replay" aria-pressed="false">Robot replay</button>
+          <button type="button" data-filter="policy" aria-pressed="false">Policy</button>
+        </div>
+      </div>
+
+      <!--
+        To add a video, replace the placeholder <div class="video-frame is-placeholder">...</div> with:
+          <div class="video-frame">
+            <video controls autoplay loop muted playsinline preload="metadata" poster="assets/videos/NAME.jpg">
+              <source src="assets/videos/NAME.mp4" type="video/mp4">
+            </video>
+          </div>
+      -->
+      <div class="gallery" id="gallery">
+        <figure class="video-tile" data-kind="replay">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Hanging Cup</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="replay">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Cap Removal</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="replay">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Folding Towel</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="policy">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Pick &amp; Place</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="policy">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Folding Towel</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="policy">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Cap Removal</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+        </figure>
+        <figure class="video-tile" data-kind="policy">
+          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
+          <figcaption><strong>Hanging Cup</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- ============ Analysis ============ -->
+<section class="section soft" id="analysis">
+  <div class="wrap">
+    <div class="section-heading">
+      <p class="eyebrow">Analysis</p>
+      <h2>Why co-training helps</h2>
+    </div>
+
+    <article class="analysis-item">
+      <div class="analysis-head">
+        <span class="badge" style="--c: var(--human-mid)">A</span>
+        <div>
+          <h3>Co-training mixes human and robot latents</h3>
+          <p>For human and robot windows with nearly the same action, the teachers keep the two domains apart, while the students mix them. The fraction of each window's nearest neighbors that come from the same domain drops from 70.6% (2-view) and 76.3% (3-view) in the teachers to 58% in both students, where 50% is full mixing.</p>
+        </div>
+      </div>
+      <figure class="figure-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/latent_tsne.webp" width="2400" height="772" alt="t-SNE plots of human and robot latents for the two teachers and the two students. Human and robot points separate in the teachers and mix in the students." loading="lazy"></div>
+        <figcaption><strong>Human and robot latents at matched actions.</strong> t-SNE of each IDM's latents for matched human and robot windows. Numbers in parentheses are the fraction of each window's 10 nearest neighbors that come from the same domain.</figcaption>
+      </figure>
+    </article>
+
+    <article class="analysis-item">
+      <div class="analysis-head">
+        <span class="badge" style="--c: var(--robot-light)">B</span>
+        <div>
+          <h3>The student uses the front view on human videos</h3>
+          <p>No human pseudo-action depends on the front view, yet the 3-view student draws on it when the wrist views carry little visual evidence. With at most 10 feature points in a wrist view, the front view accounts for 19&ndash;23% of the predicted motion, compared with 1.9% when there are more than 80. Co-training carries the ability to use the front view over from robot data to human videos.</p>
+        </div>
+      </div>
+      <figure class="figure-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/front_attribution.webp" width="2400" height="625" alt="Human frame pairs in left wrist, front, and right wrist views with attribution heatmaps. Front-view share is 19 to 23 percent with few wrist feature points and 1.9 percent with many." loading="lazy"></div>
+        <figcaption><strong>Front-view attribution of the 3-view student IDM.</strong> Each column is a human frame pair in the left wrist (L), front (F), and right wrist (R) views. (a) Samples with at most 10 feature points in the analyzed wrist view. (b) Typical samples with more than 80. Labels give the number of feature points and the front view's share of the predicted motion.</figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+<!-- ============ BibTeX ============ -->
+<section class="section" id="bibtex">
+  <div class="narrow">
+    <div class="bib-head">
+      <h2 class="rule-heading">BibTeX</h2>
+      <button type="button" class="copy" id="copy-bib">Copy</button>
+    </div>
+    <pre id="bib"><code>@article{anonymous2026semisupervised,
+  title   = {Semi-Supervised Inverse Dynamics Models: Labeling Human Videos with Robot Actions},
+  author  = {Anonymous},
+  year    = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Semi-Supervised IDM</strong></p>
+    <p>Labeling Human Videos with Robot Actions</p>
+  </div>
+</footer>
+
 </body>
 </html>
