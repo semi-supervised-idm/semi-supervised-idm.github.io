@@ -219,6 +219,22 @@
       .catch(() => {});
   }
 
+  /* ---------- Human video mosaic: load and play only while it is near the screen ---------- */
+  const mosaic = document.getElementById("mosaic-video");
+  if (mosaic) {
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      mosaic.controls = true; // the still poster, with the option to play
+    } else {
+      new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) mosaic.play().catch(() => (mosaic.controls = true));
+          else mosaic.pause();
+        },
+        { rootMargin: "300px 0px" }
+      ).observe(mosaic);
+    }
+  }
+
   /* ---------- Result video filter ---------- */
   const gallery = document.getElementById("gallery");
   const filterButtons = [...document.querySelectorAll("[data-filter]")].filter((el) => el.tagName === "BUTTON");

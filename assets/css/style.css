@@ -474,3 +474,17 @@ footer strong { color: var(--ink); }
 @media (max-width: 620px) {
   .figure-scroll .mfig-svg { width: 760px; max-width: none; }
 }
+
+/* ---------- Human video mosaic (one video, same width as the figures) ---------- */
+.mosaic { padding-bottom: 0; }
+.mosaic .section-heading { margin-bottom: 30px; }
+.mosaic-frame { padding: 14px; }
+.mosaic-clip { overflow: hidden; }
+.mosaic-video { display: block; width: 100%; height: auto; }
+#method { padding-top: 76px; }
+@media (max-width: 620px) {
+  .mosaic-frame { padding: 10px; }
+  /* show the middle 6 of the 14 columns, enlarged, instead of 14 tiny ones
+     (6 tiles + 5 gaps = 788 of 1844 px; they start 528 px from the left) */
+  .mosaic-video { width: 234%; max-width: none; margin-left: -67%; }
+}
