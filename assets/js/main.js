@@ -74,6 +74,151 @@
     }
   }
 
+  /* ---------- Method figure: one stage at a time, once, when scrolled into view ---------- */
+  const methodFigure = document.getElementById("method-figure");
+  if (methodFigure) {
+    const stage = document.getElementById("method-stage");
+    const cards = [...document.querySelectorAll("#method-steps li")];
+    const replayButton = document.getElementById("method-replay");
+
+    // Time each stage stays in focus before the next one.
+    const HOLD = { 1: 3000, 2: 3200, 3: 5200 };
+
+    // Centre line the pseudo-actions follow, in figure coordinates: out of the frozen teacher,
+    // along the dashed arrow, into the student's target slots.
+    const ROUTE = [[565, 531], [694, 531], [694, 596], [813, 596]];
+    const SPACING = 28; // between neighbouring squares
+    const DISTANCE = 257; // covered by each square
+    const TRAVEL_DELAY = 650; // Stage 2 appears first
+    const TRAVEL_TIME = 1700;
+
+    let timer = null;
+    let travelTimer = null;
+    let frame = null;
+    let started = false;
+
+    const pointAt = (s) => {
+      for (let i = 0; i < ROUTE.length - 1; i++) {
+        const [x0, y0] = ROUTE[i];
+        const [x1, y1] = ROUTE[i + 1];
+        const length = Math.abs(x1 - x0) + Math.abs(y1 - y0);
+        if (s <= length || i === ROUTE.length - 2) {
+          const t = Math.min(s / length, 1);
+          return [x0 + (x1 - x0) * t, y0 + (y1 - y0) * t];
+        }
+        s -= length;
+      }
+    };
+    const easeInOut = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+
+    const stopTravel = () => {
+      clearTimeout(travelTimer);
+      cancelAnimationFrame(frame);
+      const group = methodFigure.querySelector(".mf-travel");
+      if (group) group.style.opacity = 0;
+    };
+
+    // The three squares leave the teacher as a train, turn the two corners one after another,
+    // and stop exactly on the target slots, which then take over.
+    const sendPseudoActions = () => {
+      const group = methodFigure.querySelector(".mf-travel");
+      const squares = [...group.querySelectorAll("rect")];
+      const place = (distance) =>
+        squares.forEach((square, k) => {
+          const [x, y] = pointAt(k * SPACING + distance);
+          square.setAttribute("x", (x - 11).toFixed(2));
+          square.setAttribute("y", (y - 11).toFixed(2));
+        });
+      place(0);
+      group.style.opacity = 1;
+      const t0 = performance.now();
+      const tick = (now) => {
+        const u = Math.min((now - t0) / TRAVEL_TIME, 1);
+        place(DISTANCE * easeInOut(u));
+        if (u < 1) {
+          frame = requestAnimationFrame(tick);
+          return;
+        }
+        methodFigure.classList.add("landed");
+        group.style.opacity = 0;
+      };
+      frame = requestAnimationFrame(tick);
+    };
+
+    const mark = (step) => cards.forEach((c) => c.classList.toggle("is-active", c.dataset.step === String(step)));
+
+    // Show `step`, then continue through the remaining stages to the complete figure.
+    const run = (step) => {
+      clearTimeout(timer);
+      stopTravel();
+      methodFigure.classList.remove("landed");
+      methodFigure.dataset.step = step;
+      mark(step);
+      if (step === 3) travelTimer = setTimeout(sendPseudoActions, TRAVEL_DELAY);
+      timer =
+        step === "done"
+          ? setTimeout(() => mark(null), 2600)
+          : setTimeout(() => run(step < 3 ? step + 1 : "done"), HOLD[step]);
+    };
+
+    // Restart from the faint outline so the chosen stage fades in again.
+    const playFrom = (step) => {
+      clearTimeout(timer);
+      stopTravel();
+      methodFigure.classList.add("no-anim");
+      methodFigure.dataset.step = "0";
+      void methodFigure.getBoundingClientRect(); // apply the reset before animating
+      methodFigure.classList.remove("no-anim");
+      started = true;
+      run(step);
+    };
+
+    const init = () => {
+      if (reduceMotion) return; // the complete figure, without motion
+
+      methodFigure.classList.add("no-anim");
+      methodFigure.dataset.step = "0";
+      void methodFigure.getBoundingClientRect();
+      methodFigure.classList.remove("no-anim");
+
+      cards.forEach((card) => {
+        const step = Number(card.dataset.step);
+        if (!step) return; // the last card describes the result, not a stage
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", `Replay step ${step}: ${card.querySelector("h3").textContent}`);
+        card.addEventListener("click", () => playFrom(step));
+        card.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          playFrom(step);
+        });
+      });
+      replayButton.hidden = false;
+      replayButton.addEventListener("click", () => playFrom(1));
+
+      if (!("IntersectionObserver" in window)) return playFrom(1);
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting || started) return;
+          observer.disconnect();
+          playFrom(1);
+        },
+        { threshold: 0.45 }
+      );
+      observer.observe(stage);
+    };
+
+    // Swap the static image for the layered SVG. If that fails, the image simply stays.
+    fetch("assets/img/method.svg")
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error(response.status))))
+      .then((svg) => {
+        stage.innerHTML = svg;
+        init();
+      })
+      .catch(() => {});
+  }
+
   /* ---------- Result video filter ---------- */
   const gallery = document.getElementById("gallery");
   const filterButtons = [...document.querySelectorAll("[data-filter]")].filter((el) => el.tagName === "BUTTON");

@@ -218,28 +218,32 @@
       <p>Two training stages turn unlabeled human videos into training data for the IDM itself.</p>
     </div>
 
-    <figure class="figure-card reveal-up">
-      <div class="figure-scroll"><img src="assets/img/overview.webp" width="2200" height="1073" alt="Two-stage training. Stage 1 trains a 2-view teacher IDM on robot data. The frozen teacher then generates pseudo-actions on human data. Stage 2 co-trains a 3-view student IDM on robot and human data." loading="lazy"></div>
-      <figcaption><strong>Two-stage training.</strong> Stage 1 trains a 2-view teacher IDM on robot data using both wrist views. The frozen teacher then predicts pseudo-actions from human videos. Stage 2 co-trains a 3-view student IDM on ground-truth robot actions and human pseudo-actions, using both wrist views and an additional front view.</figcaption>
+    <!-- The static image is replaced by assets/img/method.svg (same figure, in layers) so it can build stage by stage. -->
+    <figure class="figure-card reveal-up mfig" id="method-figure">
+      <div class="figure-scroll" id="method-stage"><img src="assets/img/overview.webp" width="2200" height="1073" alt="Two-stage training. Stage 1 trains a 2-view teacher IDM on robot data. The frozen teacher then generates pseudo-actions on human data. Stage 2 co-trains a 3-view student IDM on robot and human data." loading="lazy"></div>
+      <figcaption>
+        <strong>Two-stage training.</strong> Stage 1 trains a 2-view teacher IDM on robot data using both wrist views. The frozen teacher then predicts pseudo-actions from human videos. Stage 2 co-trains a 3-view student IDM on ground-truth robot actions and human pseudo-actions, using both wrist views and an additional front view.
+        <button type="button" class="text-button" id="method-replay" hidden>Replay animation</button>
+      </figcaption>
     </figure>
 
-    <ol class="steps">
-      <li class="reveal-up">
+    <ol class="steps" id="method-steps">
+      <li class="reveal-up" data-step="1">
         <span class="step-number" style="--c: var(--robot)">01</span>
         <h3>Train a wrist-view teacher</h3>
         <p>A 2-view teacher IDM is trained on action-labeled robot data using only the two wrist views, which look alike in human and robot recordings.</p>
       </li>
-      <li class="reveal-up">
+      <li class="reveal-up" data-step="2">
         <span class="step-number" style="--c: var(--human)">02</span>
         <h3>Generate pseudo-actions</h3>
         <p>The frozen teacher predicts the action between adjacent frames of each human video. These predictions are the pseudo-actions.</p>
       </li>
-      <li class="reveal-up">
+      <li class="reveal-up" data-step="3">
         <span class="step-number" style="--c: var(--gap)">03</span>
         <h3>Co-train a 3-view student</h3>
         <p>A student IDM with an added front view is trained on robot actions and human pseudo-actions in equal proportion, with noise on the human inputs.</p>
       </li>
-      <li class="reveal-up">
+      <li class="reveal-up" data-step="done">
         <span class="step-number" style="--c: var(--navy)">04</span>
         <h3>Label human videos</h3>
         <p>The student labels human videos with metric actions that a robot can replay directly and a policy can be trained on.</p>
