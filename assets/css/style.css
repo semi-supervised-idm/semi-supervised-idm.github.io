@@ -61,6 +61,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   letter-spacing: -0.012em;
   text-wrap: balance;
 }
+/* One line except on narrow screens: the title is 17.2-18.1 em wide (Source Serif widens at small optical sizes), so the size follows the viewport up to 57px (fits the 980px column). */
+@media (min-width: 700px) {
+  .hero h1 { white-space: nowrap; font-size: min(57px, calc((100vw - 48px) / 18.6)); }
+}
 .hero-subtitle {
   margin-top: 14px;
   padding-bottom: 26px;
