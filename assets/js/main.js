@@ -219,31 +219,20 @@
       .catch(() => {});
   }
 
-  /* ---------- Human video mosaic: load and play only while it is near the screen ---------- */
-  const mosaic = document.getElementById("mosaic-video");
-  if (mosaic) {
+  /* ---------- Page videos (human mosaic, cup replays): load and play only while near the screen ---------- */
+  document.querySelectorAll("video[data-autoplay]").forEach((video) => {
     if (reduceMotion || !("IntersectionObserver" in window)) {
-      mosaic.controls = true; // the still poster, with the option to play
-    } else {
-      new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) mosaic.play().catch(() => (mosaic.controls = true));
-          else mosaic.pause();
-        },
-        { rootMargin: "300px 0px" }
-      ).observe(mosaic);
+      video.controls = true; // the still poster, with the option to play
+      return;
     }
-  }
-
-  /* ---------- Result video filter ---------- */
-  const gallery = document.getElementById("gallery");
-  const filterButtons = [...document.querySelectorAll("[data-filter]")].filter((el) => el.tagName === "BUTTON");
-  filterButtons.forEach((b) =>
-    b.addEventListener("click", () => {
-      gallery.dataset.filter = b.dataset.filter;
-      filterButtons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
-    })
-  );
+    new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) video.play().catch(() => (video.controls = true));
+        else video.pause();
+      },
+      { rootMargin: "300px 0px" }
+    ).observe(video);
+  });
 
   /* ---------- Copy BibTeX ---------- */
   const copyButton = document.getElementById("copy-bib");

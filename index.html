@@ -191,7 +191,7 @@
         <span class="metric-label">cumulative translation error on human videos, relative to the teacher IDM trained only on robot data</span>
       </div>
       <div class="metric">
-        <span class="metric-value">23 <i>&rarr;</i> 66%</span>
+        <span class="metric-value">23% <i>&rarr;</i> 66%</span>
         <span class="metric-label">average progress success rate when the predicted actions are replayed on a real robot</span>
       </div>
       <div class="metric">
@@ -220,7 +220,7 @@
     <figure class="figure-card reveal-up">
       <div class="mosaic-frame">
         <div class="mosaic-clip">
-          <video class="mosaic-video" id="mosaic-video" muted loop playsinline preload="none"
+          <video class="mosaic-video" id="mosaic-video" data-autoplay muted loop playsinline preload="none"
                  poster="assets/video/human_mosaic.jpg" width="1844" height="596"
                  aria-label="A grid of 84 short clips of people doing everyday tasks with handheld grippers, in homes, kitchens, and outdoors.">
             <source src="assets/video/human_mosaic.mp4" type="video/mp4">
@@ -339,6 +339,43 @@
         <div class="figure-scroll"><img src="assets/img/replay.webp" width="2400" height="611" alt="Replay progress success rate on three tasks for four IDMs, and frames of a human Hanging Cup demonstration next to its robot replay." loading="lazy"></div>
         <figcaption><strong>Robot replay of predicted actions.</strong> (a) Progress success rate on three tasks. Each IDM is evaluated on the same five human demonstrations per task, with three replays per demonstration. (b) A human Hanging Cup demonstration and its robot replay.</figcaption>
       </figure>
+
+      <!-- One video holds the demonstration and the four replays (built by a local tool), so they stay in sync.
+           Two layouts: wide (1920x540, human left, 2x2 replays right) and tall for phones (728x830, human on top).
+           Only the visible one loads and plays. The labels sit on the video tiles (boxes in style.css). -->
+      <figure class="figure-card reveal-up replay-card">
+        <div class="replay-frame">
+          <div class="replay-stage replay-wide">
+            <video class="replay-video" data-autoplay muted loop playsinline preload="none"
+                   poster="assets/video/cup_replay.jpg" width="1920" height="540"
+                   aria-label="A person hangs two mugs on a shelf with handheld grippers. Next to it, four robot replays of the actions predicted by each IDM. The 3-view student hangs both mugs, the 3-view teacher one, and the two others none.">
+              <source src="assets/video/cup_replay.mp4" type="video/mp4">
+            </video>
+            <div class="replay-labels" aria-hidden="true">
+              <div class="rl-tile rl-human"><span class="rl-chip">Human demonstration <em>1&times;</em></span></div>
+              <div class="rl-tile rl-t2" style="--c:#929292"><span class="rl-chip"><i></i>2-view Teacher <em>6.5&times;</em></span><span class="rl-chip rl-out">0/2 cups hung</span></div>
+              <div class="rl-tile rl-t3" style="--c:#525152"><span class="rl-chip"><i></i>3-view Teacher <em>6.5&times;</em></span><span class="rl-chip rl-out">1/2 cups hung</span></div>
+              <div class="rl-tile rl-s2" style="--c:#9db6e9"><span class="rl-chip"><i></i>2-view Student <em>6.5&times;</em></span><span class="rl-chip rl-out">0/2 cups hung</span></div>
+              <div class="rl-tile rl-s3 is-ours" style="--c:#2f5fce"><span class="rl-chip"><i></i>3-view Student (Ours) <em>6.5&times;</em></span><span class="rl-chip rl-out">2/2 cups hung</span></div>
+            </div>
+          </div>
+          <div class="replay-stage replay-tall">
+            <video class="replay-video" data-autoplay muted loop playsinline preload="none"
+                   poster="assets/video/cup_replay_tall.jpg" width="728" height="830"
+                   aria-label="A person hangs two mugs on a shelf with handheld grippers. Below it, four robot replays of the actions predicted by each IDM. The 3-view student hangs both mugs, the 3-view teacher one, and the two others none.">
+              <source src="assets/video/cup_replay_tall.mp4" type="video/mp4">
+            </video>
+            <div class="replay-labels" aria-hidden="true">
+              <div class="rl-tile rl-human"><span class="rl-chip">Human demonstration <em>1&times;</em></span></div>
+              <div class="rl-tile rl-t2" style="--c:#929292"><span class="rl-chip"><i></i>2-view Teacher <em>6.5&times;</em></span><span class="rl-chip rl-out">0/2 hung</span></div>
+              <div class="rl-tile rl-t3" style="--c:#525152"><span class="rl-chip"><i></i>3-view Teacher <em>6.5&times;</em></span><span class="rl-chip rl-out">1/2 hung</span></div>
+              <div class="rl-tile rl-s2" style="--c:#9db6e9"><span class="rl-chip"><i></i>2-view Student <em>6.5&times;</em></span><span class="rl-chip rl-out">0/2 hung</span></div>
+              <div class="rl-tile rl-s3 is-ours" style="--c:#2f5fce"><span class="rl-chip"><i></i>3-view Student (Ours) <em>6.5&times;</em></span><span class="rl-chip rl-out">2/2 hung</span></div>
+            </div>
+          </div>
+        </div>
+        <figcaption><strong>Replays of one Hanging Cup demonstration.</strong> The human demonstration in real time, and robot replays of the actions each IDM predicted from it. The robot moves to the next waypoint only after reaching the current one, so each replay takes 91&ndash;100&nbsp;s for the 14&nbsp;s demonstration. All replays are shown at 6.5&times; speed, starting together with the demonstration.</figcaption>
+      </figure>
     </section>
 
     <section class="result-group" aria-labelledby="policy-heading">
@@ -354,50 +391,64 @@
 
     <section class="result-group" aria-labelledby="videos-heading">
       <div class="gallery-head">
-        <h3 id="videos-heading">Result videos</h3>
-        <div class="filter" role="group" aria-label="Filter result videos">
-          <button type="button" data-filter="all" aria-pressed="true">All</button>
-          <button type="button" data-filter="replay" aria-pressed="false">Robot replay</button>
-          <button type="button" data-filter="policy" aria-pressed="false">Policy</button>
+        <div>
+          <h3 id="videos-heading">A robot policy trained only on human data</h3>
+          <p class="gallery-lead">Each video pairs a human demonstration from the policy&rsquo;s training data (top) with a rollout of the policy on the robot (bottom). The policy learned every task from IDM-labeled human demonstrations alone and never saw a robot demonstration. Human demonstrations play in real time; each rollout is sped up by one constant factor so that the grasps and releases of the pair line up.</p>
         </div>
+        <dl class="data-recipe" aria-label="Training data of this policy">
+          <div class="dr-human"><dt>Human demonstrations</dt><dd>8,000&nbsp;h pretraining + 100 per task</dd></div>
+          <div class="dr-robot"><dt>Robot demonstrations</dt><dd>0</dd></div>
+        </dl>
       </div>
 
-      <!--
-        To add a video, replace the placeholder <div class="video-frame is-placeholder">...</div> with:
-          <div class="video-frame">
-            <video controls autoplay loop muted playsinline preload="metadata" poster="assets/videos/NAME.jpg">
-              <source src="assets/videos/NAME.mp4" type="video/mp4">
-            </video>
-          </div>
-      -->
       <div class="gallery" id="gallery">
-        <figure class="video-tile" data-kind="replay">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Hanging Cup</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
-        </figure>
-        <figure class="video-tile" data-kind="replay">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Cap Removal</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
-        </figure>
-        <figure class="video-tile" data-kind="replay">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Folding Towel</strong><span>Human demonstration and its robot replay with our IDM's actions.</span></figcaption>
+        <figure class="video-tile" data-kind="policy">
+          <div class="video-frame is-pair">
+            <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_pick_place.jpg" aria-label="Top: a human placing two cans in a basket. Bottom: the robot policy trained only on human data doing the same">
+              <source src="assets/video/pair_pick_place.mp4" type="video/mp4">
+            </video>
+            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-right">1&times;</span>
+            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-right">1.2&times;</span>
+          </div>
+          <figcaption><strong>Pick &amp; Place <em class="vf-score">progress 1.0</em></strong><span>Both cans placed in the basket.</span></figcaption>
         </figure>
         <figure class="video-tile" data-kind="policy">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Pick &amp; Place</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+          <div class="video-frame is-pair">
+            <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_towel.jpg" aria-label="Top: a human folding a towel. Bottom: the robot policy trained only on human data doing the same">
+              <source src="assets/video/pair_towel.mp4" type="video/mp4">
+            </video>
+            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-right">1&times;</span>
+            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-right">2.1&times;</span>
+          </div>
+          <figcaption><strong>Folding Towel <em class="vf-score">progress 1.0</em></strong><span>Towel grasped at both corners and folded.</span></figcaption>
         </figure>
         <figure class="video-tile" data-kind="policy">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Folding Towel</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+          <div class="video-frame is-pair">
+            <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_cap.jpg" aria-label="Top: a human pulling the cap off a marker. Bottom: the robot policy trained only on human data doing the same">
+              <source src="assets/video/pair_cap.mp4" type="video/mp4">
+            </video>
+            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-right">1&times;</span>
+            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-right">1.5&times;</span>
+          </div>
+          <figcaption><strong>Cap Removal <em class="vf-score">progress 1.0</em></strong><span>Marker lifted and its cap pulled off.</span></figcaption>
         </figure>
         <figure class="video-tile" data-kind="policy">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Cap Removal</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
-        </figure>
-        <figure class="video-tile" data-kind="policy">
-          <div class="video-frame is-placeholder"><span>Video coming soon</span></div>
-          <figcaption><strong>Hanging Cup</strong><span>Rollout of the policy trained only on human demonstrations.</span></figcaption>
+          <div class="video-frame is-pair">
+            <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_cup.jpg" aria-label="Top: a human hanging two cups on a rack. Bottom: the robot policy trained only on human data doing the same">
+              <source src="assets/video/pair_cup.mp4" type="video/mp4">
+            </video>
+            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-right">1&times;</span>
+            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-right">1.6&times;</span>
+          </div>
+          <figcaption><strong>Hanging Cup <em class="vf-score">progress 0.75</em></strong><span>Both cups grasped, the left cup hung.</span></figcaption>
         </figure>
       </div>
     </section>
