@@ -6,7 +6,7 @@
   const play = document.getElementById('ft-play');
   const seek = document.getElementById('ft-seek');
   const clock = document.getElementById('ft-clock');
-  const badge = document.getElementById('ft-badge');
+  const figureButton = document.getElementById('ft-figure');
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const tabs = [...root.querySelectorAll('[data-front-case]')];
   const ns = 'http://www.w3.org/2000/svg';
@@ -50,8 +50,6 @@
     });
     svgElement('path', { d: path, fill: 'none', stroke: spec.color, 'stroke-opacity': .25, 'stroke-width': 1.7 }, svg);
     svgElement('path', { d: path, fill: 'none', stroke: spec.color, 'stroke-width': 2, 'clip-path': `url(#${spec.id}-past)` }, svg);
-    const figure = current.samples[current.figureIndex];
-    svgElement('line', { x1: x(figure.time), x2: x(figure.time), y1: 12, y2: 143, stroke: '#767c88', 'stroke-width': 1.3, 'stroke-dasharray': '3 4' }, svg);
     const cursor = svgElement('line', { x1: 42, x2: 42, y1: 12, y2: 143, stroke: '#1f2a44', 'stroke-width': 1.5 }, svg);
     const dot = svgElement('circle', { cx: 42, cy: 142, r: 4.5, fill: spec.color, stroke: '#fff', 'stroke-width': 1.5 }, svg);
     return { ...spec, past, cursor, dot };
@@ -91,13 +89,6 @@
       chart.dot.setAttribute('cx', xx);
       if (value !== null) chart.dot.setAttribute('cy', y(value, chart.max));
     });
-    const figure = i === current.figureIndex;
-    const state = figure ? 'figure' : 'normal';
-    if (badge.dataset.state !== state) {
-      badge.dataset.state = state;
-      badge.textContent = figure ? 'Original figure frame' : 'Front-view evidence over time';
-      badge.classList.toggle('is-figure', figure);
-    }
   }
 
   function inspect(index) {
@@ -134,6 +125,7 @@
       dataset = await response.json();
       root.querySelector('.ft-tabs').hidden = false;
       root.querySelector('.ft-interactive').hidden = false;
+      figureButton.hidden = false;
       video.controls = false;
       tabs.forEach((tab) => tab.addEventListener('click', () => loadCase(Number(tab.dataset.frontCase))));
       play.addEventListener('click', () => {
@@ -144,7 +136,7 @@
         }
       });
       seek.addEventListener('input', () => inspect(Math.round(Number(seek.value) * current.fps)));
-      document.getElementById('ft-figure').addEventListener('click', () => inspect(current.figureIndex));
+      figureButton.addEventListener('click', () => inspect(current.figureIndex));
       video.addEventListener('loadedmetadata', () => {
         render(0);
         if (visible && !started && !motion.matches) startPlayback();
@@ -153,7 +145,7 @@
       ['seeked', 'timeupdate'].forEach((event) => video.addEventListener(event, () => render(video.currentTime)));
       video.addEventListener('error', () => {
         pause();
-        badge.textContent = 'Video unavailable — see the static figure below';
+        document.getElementById('ft-description').textContent = 'Video unavailable — see the static figure below';
       });
       if ('requestVideoFrameCallback' in video) {
         const onFrame = (_, metadata) => {
@@ -187,6 +179,7 @@
       video.controls = true;
       root.querySelector('.ft-tabs').hidden = true;
       root.querySelector('.ft-interactive').hidden = true;
+      figureButton.hidden = true;
     }
   }
 
