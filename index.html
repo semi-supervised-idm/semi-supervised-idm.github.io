@@ -17,9 +17,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/latent-animation.css">
+  <link rel="stylesheet" href="assets/css/front-timeline.css">
   <script>document.documentElement.classList.add("js");</script>
   <script defer src="assets/js/main.js"></script>
   <script defer src="assets/js/latent-animation.js"></script>
+  <script defer src="assets/js/front-timeline.js"></script>
 </head>
 <body>
 
@@ -530,7 +532,7 @@
       </figure>
     </article>
 
-    <article class="analysis-item">
+    <article class="analysis-item" id="front-view-analysis">
       <div class="analysis-head">
         <span class="badge" style="--c: var(--robot-light)">B</span>
         <div>
@@ -538,6 +540,47 @@
           <p>No human pseudo-action depends on the front view, yet the 3-view student draws on it when the wrist views carry little visual evidence. With at most 10 feature points in a wrist view, the front view accounts for 19&ndash;23% of the predicted motion, compared with 1.9% when there are more than 80. Co-training carries the ability to use the front view over from robot data to human videos.</p>
         </div>
       </div>
+      <figure class="figure-card reveal-up front-timeline" id="front-timeline">
+        <div class="ft-tabs" role="group" aria-label="Choose a video example" hidden>
+          <button type="button" data-front-case="0" aria-pressed="true"><span>(a) Fewer wrist features</span><strong>Clean a shoe</strong></button>
+          <button type="button" data-front-case="1" aria-pressed="false"><span>(b) More wrist features</span><strong>Carry cups</strong></button>
+        </div>
+        <div class="ft-intro">
+          <div><h4 id="ft-title">Clean a shoe</h4><p id="ft-description">Right arm · 15 seconds at original speed</p></div>
+          <span class="ft-badge" id="ft-badge" role="status" aria-live="polite">Front-view evidence over time</span>
+        </div>
+        <div class="ft-camera-labels" aria-hidden="true"><span data-ft-wrist="left">Left wrist</span><span>Front <small>+ heatmap</small></span><span data-ft-wrist="right" class="is-analyzed">Right wrist <small>Analyzed arm</small></span></div>
+        <div class="ft-video-wrap">
+          <video id="ft-video" controls muted playsinline preload="none" poster="assets/video/front-few-poster.jpg" width="1080" height="420" aria-label="Clean a shoe: left and right wrist videos with front-view attribution heatmap">
+            <source src="assets/video/front-few.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="ft-interactive" hidden>
+          <div class="ft-controls">
+            <button type="button" id="ft-play">Play</button>
+            <label class="ft-sr-only" for="ft-seek">Video time in seconds</label>
+            <input type="range" id="ft-seek" min="0" max="14.9" step="0.1" value="0">
+            <output id="ft-clock" for="ft-seek">0.0 / 15.0 s</output>
+          </div>
+          <div class="ft-graphs">
+            <div class="ft-graph ft-wrist">
+              <div class="ft-graph-heading"><h5>Wrist feature points</h5><strong id="ft-feature-value">—</strong></div>
+              <svg id="ft-feature-chart" viewBox="0 0 500 180" role="img" aria-label="Wrist feature count over the 15-second clip"></svg>
+            </div>
+            <div class="ft-graph ft-front">
+              <div class="ft-graph-heading"><h5>Front-view contribution</h5><strong id="ft-front-value">—</strong></div>
+              <svg id="ft-front-chart" viewBox="0 0 500 180" role="img" aria-label="Front-view Shapley share over the 15-second clip"></svg>
+            </div>
+          </div>
+          <div class="ft-chart-legend"><span><i class="ft-peak-key" aria-hidden="true"></i>Clip peak</span><span><i class="ft-figure-key" aria-hidden="true"></i>Figure frame</span><span>Each point: one 0.1 s frame pair</span></div>
+          <div class="ft-moments">
+            <button type="button" id="ft-peak"><span>Inspect clip peak</span><strong id="ft-peak-value"></strong></button>
+            <button type="button" id="ft-figure"><span>Inspect figure frame</span><strong id="ft-figure-value"></strong></button>
+          </div>
+          <p class="ft-play-note">Playback briefly holds at the clip peak. Select either moment to inspect it.</p>
+        </div>
+        <figcaption><strong>Two synchronized video examples.</strong> Wrist images stay unaltered; only the front view carries a heatmap. The blue outline identifies the analyzed wrist. Graphs show measured Shi–Tomasi feature counts and the selected arm’s standardized 6-DoF Shapley front share, without temporal smoothing. Heatmaps use positive Integrated Gradients (8 steps) on one fixed color scale; the static figure below uses 16 steps. Low-motion pairs have no plotted share. Clip peaks and the original figure frames are marked separately.</figcaption>
+      </figure>
       <figure class="figure-card reveal-up">
         <div class="figure-scroll"><img src="assets/img/front_attribution.webp" width="2400" height="625" alt="Human frame pairs in left wrist, front, and right wrist views with attribution heatmaps. Front-view share is 19 to 23 percent with few wrist feature points and 1.9 percent with many." loading="lazy"></div>
         <figcaption><strong>Front-view attribution of the 3-view student IDM.</strong> Each column is a human frame pair in the left wrist (L), front (F), and right wrist (R) views. (a) Samples with at most 10 feature points in the analyzed wrist view. (b) Typical samples with more than 80. Labels give the number of feature points and the front view's share of the predicted motion.</figcaption>
