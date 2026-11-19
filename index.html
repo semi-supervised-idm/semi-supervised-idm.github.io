@@ -338,9 +338,9 @@
         <h3 id="replay-heading">Robot replay of predicted actions</h3>
         <p>Actions predicted from a human video are chained and replayed on a robot without correction. Average progress success rate: <strong>23% &rarr; 66%</strong> (2-view teacher &rarr; our 3-view student).</p>
       </div>
-      <figure class="figure-card reveal-up">
-        <div class="figure-scroll"><img src="assets/img/replay.webp" width="2400" height="611" alt="Replay progress success rate on three tasks for four IDMs, and frames of a human Hanging Cup demonstration next to its robot replay." loading="lazy"></div>
-        <figcaption><strong>Robot replay of predicted actions.</strong> (a) Progress success rate on three tasks. Each IDM is evaluated on the same five human demonstrations per task, with three replays per demonstration. (b) A human Hanging Cup demonstration and its robot replay.</figcaption>
+      <figure class="figure-card chart-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/replay_rate.webp" width="1500" height="728" alt="Replay progress success rate of the four IDMs on Hanging Cup, Cap Removal, and Folding Towel. The 3-view student is highest on all three tasks." loading="lazy"></div>
+        <figcaption><strong>Replay progress success rate.</strong> Each IDM replays the same five human demonstrations per task, three times each. Error bars: standard error over demonstrations.</figcaption>
       </figure>
 
       <!-- One video holds the demonstration and the four replays (built by a local tool), so they stay in sync.
@@ -386,9 +386,9 @@
         <h3 id="policy-heading">Policy learning from human demonstrations</h3>
         <p>Trained only on IDM-labeled human demonstrations, with <strong>no robot data</strong>, the policy reaches <strong>57%</strong> average progress success, close to <strong>70%</strong> when fine-tuned on robot demonstrations.</p>
       </div>
-      <figure class="figure-card reveal-up">
-        <div class="figure-scroll"><img src="assets/img/policy.webp" width="2400" height="745" alt="Policy progress success rate on four tasks for policies fine-tuned on human or robot demonstrations, with frames of human demonstrations and policy rollouts." loading="lazy"></div>
-        <figcaption><strong>Downstream policy performance.</strong> (a) Progress success rate of policies fine-tuned on 100 human demonstrations or 100 robot demonstrations, as the mean over three random seeds. (b) A human demonstration used for training and a rollout of the policy trained on human demonstrations, at the same stage of each task.</figcaption>
+      <figure class="figure-card chart-card reveal-up">
+        <div class="figure-scroll"><img src="assets/img/policy_rate.webp" width="1500" height="703" alt="Policy progress success rate on Pick and Place, Folding Towel, Cap Removal, and Hanging Cup for policies fine-tuned on human or robot demonstrations." loading="lazy"></div>
+        <figcaption><strong>Policy progress success rate.</strong> Fine-tuned on 100 human or 100 robot demonstrations per task. Bars: mean over three seeds; dots: single seeds.</figcaption>
       </figure>
     </section>
 
@@ -410,10 +410,10 @@
             <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_pick_place.jpg" aria-label="Top: a human placing two cans in a basket. Bottom: the robot policy trained only on human data doing the same">
               <source src="assets/video/pair_pick_place.mp4" type="video/mp4">
             </video>
-            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-left">Human demonstration</span>
             <span class="vf-chip vf-top vf-right">1&times;</span>
             <span class="vf-seam"><b aria-hidden="true">&darr;</b><span>Labeled by our IDM,<br>used to train the policy</span></span>
-            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-left">Policy (human data only)</span>
             <span class="vf-chip vf-bottom vf-right">1.2&times;</span>
           </div>
           <figcaption><strong>Pick &amp; Place <em class="vf-score">progress 1.0</em></strong><span>Both cans placed in the basket.</span></figcaption>
@@ -423,10 +423,10 @@
             <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_towel.jpg" aria-label="Top: a human folding a towel. Bottom: the robot policy trained only on human data doing the same">
               <source src="assets/video/pair_towel.mp4" type="video/mp4">
             </video>
-            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-left">Human demonstration</span>
             <span class="vf-chip vf-top vf-right">1&times;</span>
             <span class="vf-seam"><b aria-hidden="true">&darr;</b><span>Labeled by our IDM,<br>used to train the policy</span></span>
-            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-left">Policy (human data only)</span>
             <span class="vf-chip vf-bottom vf-right">2.1&times;</span>
           </div>
           <figcaption><strong>Folding Towel <em class="vf-score">progress 1.0</em></strong><span>Towel grasped at both corners and folded.</span></figcaption>
@@ -436,10 +436,10 @@
             <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_cap.jpg" aria-label="Top: a human pulling the cap off a marker. Bottom: the robot policy trained only on human data doing the same">
               <source src="assets/video/pair_cap.mp4" type="video/mp4">
             </video>
-            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-left">Human demonstration</span>
             <span class="vf-chip vf-top vf-right">1&times;</span>
             <span class="vf-seam"><b aria-hidden="true">&darr;</b><span>Labeled by our IDM,<br>used to train the policy</span></span>
-            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-left">Policy (human data only)</span>
             <span class="vf-chip vf-bottom vf-right">1.5&times;</span>
           </div>
           <figcaption><strong>Cap Removal <em class="vf-score">progress 1.0</em></strong><span>Marker lifted and its cap pulled off.</span></figcaption>
@@ -449,10 +449,10 @@
             <video data-autoplay muted loop playsinline preload="none" poster="assets/video/pair_cup.jpg" aria-label="Top: a human hanging two cups on a rack. Bottom: the robot policy trained only on human data doing the same">
               <source src="assets/video/pair_cup.mp4" type="video/mp4">
             </video>
-            <span class="vf-chip vf-top vf-left"><i class="is-human"></i>Human demonstration</span>
+            <span class="vf-chip vf-top vf-left">Human demonstration</span>
             <span class="vf-chip vf-top vf-right">1&times;</span>
             <span class="vf-seam"><b aria-hidden="true">&darr;</b><span>Labeled by our IDM,<br>used to train the policy</span></span>
-            <span class="vf-chip vf-bottom vf-left"><i class="is-robot"></i>Policy (human data only)</span>
+            <span class="vf-chip vf-bottom vf-left">Policy (human data only)</span>
             <span class="vf-chip vf-bottom vf-right">1.6&times;</span>
           </div>
           <figcaption><strong>Hanging Cup <em class="vf-score">progress 0.75</em></strong><span>Both cups grasped, the left cup hung.</span></figcaption>
