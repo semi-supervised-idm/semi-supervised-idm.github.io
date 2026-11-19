@@ -1,0 +1,51 @@
+/* Analysis A: original t-SNE endpoints with a shared before/after control. */
+.latent-animation[hidden] { display: none; }
+.latent-animation { padding: 26px 32px 0; }
+.latent-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.latent-toggle { display: inline-flex; padding: 4px; border: 1px solid var(--line); border-radius: 9px; }
+.latent-toggle button {
+  padding: 8px 24px; border: 0; border-radius: 6px; background: transparent;
+  color: var(--muted); font-size: 15px; font-weight: 700;
+}
+.latent-toggle button[aria-pressed="true"] { background: var(--navy); color: #fff; }
+.latent-legend { display: flex; gap: 22px; font-size: 15px; color: var(--navy); }
+.latent-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.latent-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+.latent-human { background: #f2cc5b; }
+.latent-robot { background: #9ebadc; }
+.latent-heading { margin: 26px 0 24px; text-align: center; }
+.latent-heading h4 { margin: 0 0 4px; font: 400 clamp(24px, 3vw, 32px)/1.2 var(--serif); color: var(--navy); }
+.latent-heading p { color: var(--muted); font-size: 16px; }
+.latent-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px; }
+.latent-panel { min-width: 0; }
+.latent-panel h5 { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin: 0 0 12px; font-size: 17px; }
+.latent-panel h5 span { color: var(--muted); font-size: 14px; font-weight: 400; }
+.latent-panel canvas { width: 100%; aspect-ratio: 1.32; display: block; border: 1px solid var(--line); border-radius: 7px; }
+.latent-metrics { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 14px; }
+.latent-metrics > span:not(.latent-metric-arrow) {
+  display: flex; gap: 10px; align-items: baseline; padding: 3px 8px;
+  color: var(--muted); border-bottom: 2px solid transparent; font-size: 14px;
+}
+.latent-metrics strong { font-size: 23px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.latent-metrics > .is-active { color: var(--navy) !important; border-color: var(--human-mid) !important; }
+.latent-metric-arrow { color: #a3a5aa; }
+.latent-metric-caption { text-align: center; color: var(--muted); font-size: 14px; margin: 16px 0 22px; }
+.latent-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid var(--line); padding: 16px 0; }
+.latent-play { border: 0; background: transparent; padding: 4px 0; font-size: 14px; color: var(--navy); text-decoration: underline; text-underline-offset: 4px; }
+.latent-footer p { color: var(--muted); font-size: 14px; }
+.latent-static > summary { display: none; }
+.latent-ready .latent-static { border-top: 1px solid var(--line); }
+.latent-ready .latent-static > summary { display: list-item; cursor: pointer; padding: 14px 32px; color: var(--muted); font-size: 14px; }
+@media (max-width: 700px) {
+  .latent-animation { padding: 20px 16px 0; }
+  .latent-toolbar { flex-wrap: wrap; }
+  .latent-toggle button { padding: 7px 18px; }
+  .latent-legend { gap: 14px; font-size: 14px; }
+  .latent-panels { grid-template-columns: 1fr; gap: 26px; }
+  .latent-heading { margin: 22px 0; }
+  .latent-panel canvas { aspect-ratio: 1.3; }
+  .latent-metrics { gap: 14px; }
+  .latent-metrics strong { font-size: 22px; }
+  .latent-ready .latent-static > summary { padding-inline: 16px; }
+  .latent-footer { align-items: baseline; }
+}
