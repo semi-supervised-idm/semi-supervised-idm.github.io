@@ -114,12 +114,6 @@
     tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(Number(tab.dataset.frontCase) === index)));
     document.getElementById('ft-title').textContent = current.title;
     document.getElementById('ft-description').textContent = `${current.arm === 'left' ? 'Left' : 'Right'} arm · 15 seconds at original speed`;
-    root.querySelectorAll('[data-ft-wrist]').forEach((label) => {
-      const own = label.dataset.ftWrist === current.arm;
-      label.classList.toggle('is-analyzed', own);
-      label.replaceChildren(document.createTextNode(label.dataset.ftWrist === 'left' ? 'Left wrist' : 'Right wrist'));
-      if (own) { const note = document.createElement('small'); note.textContent = 'Analyzed arm'; label.append(note); }
-    });
     const momentText = (i) => {
       const s = current.samples[i];
       return `${s.time.toFixed(1)} s · ${s.features} features · ${s.front.toFixed(1)}% front`;
