@@ -551,7 +551,7 @@
         </div>
         <div class="ft-camera-labels" aria-hidden="true"><span data-ft-wrist="left">Left wrist</span><span>Front <small>+ heatmap</small></span><span data-ft-wrist="right" class="is-analyzed">Right wrist <small>Analyzed arm</small></span></div>
         <div class="ft-video-wrap">
-          <video id="ft-video" controls muted playsinline preload="none" poster="assets/video/front-few-poster.jpg" width="1080" height="420" aria-label="Clean a shoe: left and right wrist videos with front-view attribution heatmap">
+          <video id="ft-video" controls muted playsinline preload="none" poster="assets/video/front-few-poster.jpg" width="1080" height="282" aria-label="Clean a shoe: left and right wrist videos with front-view attribution heatmap">
             <source src="assets/video/front-few.mp4" type="video/mp4">
           </video>
         </div>
@@ -572,14 +572,12 @@
               <svg id="ft-front-chart" viewBox="0 0 500 180" role="img" aria-label="Front-view Shapley share over the 15-second clip"></svg>
             </div>
           </div>
-          <div class="ft-chart-legend"><span><i class="ft-peak-key" aria-hidden="true"></i>Clip peak</span><span><i class="ft-figure-key" aria-hidden="true"></i>Figure frame</span><span>Each point: one 0.1 s frame pair</span></div>
+          <div class="ft-chart-legend"><span><i class="ft-figure-key" aria-hidden="true"></i>Figure frame</span><span>Each point: one 0.1 s frame pair</span></div>
           <div class="ft-moments">
-            <button type="button" id="ft-peak"><span>Inspect clip peak</span><strong id="ft-peak-value"></strong></button>
             <button type="button" id="ft-figure"><span>Inspect figure frame</span><strong id="ft-figure-value"></strong></button>
           </div>
-          <p class="ft-play-note">Playback briefly holds at the clip peak. Select either moment to inspect it.</p>
         </div>
-        <figcaption><strong>Two synchronized video examples.</strong> Wrist images stay unaltered; only the front view carries a heatmap. The blue outline identifies the analyzed wrist. Graphs show measured Shi–Tomasi feature counts and the selected arm’s standardized 6-DoF Shapley front share, without temporal smoothing. Heatmaps use positive Integrated Gradients (8 steps) on one fixed color scale; the static figure below uses 16 steps. Low-motion pairs have no plotted share. Clip peaks and the original figure frames are marked separately.</figcaption>
+        <figcaption><strong>Two synchronized video examples.</strong> All three views are displayed at the same size; only the front view carries a heatmap. The blue outline identifies the analyzed wrist. Graphs show measured Shi–Tomasi feature counts and the selected arm’s standardized 6-DoF Shapley front share, without temporal smoothing. Heatmaps use positive Integrated Gradients (8 steps) on one fixed color scale; the static figure below uses 16 steps. Low-motion pairs have no plotted share. Dashed lines mark the original figure frames.</figcaption>
       </figure>
       <figure class="figure-card reveal-up">
         <div class="figure-scroll"><img src="assets/img/front_attribution.webp" width="2400" height="625" alt="Human frame pairs in left wrist, front, and right wrist views with attribution heatmaps. Front-view share is 19 to 23 percent with few wrist feature points and 1.9 percent with many." loading="lazy"></div>

@@ -15,7 +15,7 @@
     { id: 'ft-front-chart', field: 'front', max: 35, ticks: [0, 10, 20, 30], color: '#c14e3d' },
   ];
   let dataset, current, charts = [], visible = false, started = false;
-  let peakSeen = false, holding = false, holdTimer = null, raf = null, videoFrame = null;
+  let raf = null, videoFrame = null;
   const x = (time) => 42 + time / 15 * 442;
   const y = (value, max) => 142 - value / max * 126;
 
@@ -50,26 +50,18 @@
     });
     svgElement('path', { d: path, fill: 'none', stroke: spec.color, 'stroke-opacity': .25, 'stroke-width': 1.7 }, svg);
     svgElement('path', { d: path, fill: 'none', stroke: spec.color, 'stroke-width': 2, 'clip-path': `url(#${spec.id}-past)` }, svg);
-    const figure = current.samples[current.figureIndex], peak = current.samples[current.peakIndex];
+    const figure = current.samples[current.figureIndex];
     svgElement('line', { x1: x(figure.time), x2: x(figure.time), y1: 12, y2: 143, stroke: '#767c88', 'stroke-width': 1.3, 'stroke-dasharray': '3 4' }, svg);
-    if (peak[spec.field] !== null) svgElement('circle', { cx: x(peak.time), cy: y(peak[spec.field], spec.max), r: 4.5, fill: '#bd890e', stroke: '#fff', 'stroke-width': 1 }, svg);
     const cursor = svgElement('line', { x1: 42, x2: 42, y1: 12, y2: 143, stroke: '#1f2a44', 'stroke-width': 1.5 }, svg);
     const dot = svgElement('circle', { cx: 42, cy: 142, r: 4.5, fill: spec.color, stroke: '#fff', 'stroke-width': 1.5 }, svg);
     return { ...spec, past, cursor, dot };
   }
 
   function updatePlay() {
-    play.textContent = holding || !video.paused ? 'Pause' : video.ended ? 'Replay' : 'Play';
-  }
-
-  function clearHold() {
-    clearTimeout(holdTimer);
-    holdTimer = null;
-    holding = false;
+    play.textContent = !video.paused ? 'Pause' : video.ended ? 'Replay' : 'Play';
   }
 
   function pause() {
-    clearHold();
     video.pause();
     updatePlay();
   }
@@ -79,7 +71,7 @@
     video.play().catch(() => { updatePlay(); });
   }
 
-  function render(time = video.currentTime, allowHold = false) {
+  function render(time = video.currentTime) {
     if (!current) return;
     const i = Math.min(current.samples.length - 1, Math.max(0, Math.floor(time * current.fps + .0001)));
     const sample = current.samples[i];
@@ -99,33 +91,18 @@
       chart.dot.setAttribute('cx', xx);
       if (value !== null) chart.dot.setAttribute('cy', y(value, chart.max));
     });
-    const peak = i === current.peakIndex, figure = i === current.figureIndex;
-    const state = peak ? 'peak' : figure ? 'figure' : 'normal';
+    const figure = i === current.figureIndex;
+    const state = figure ? 'figure' : 'normal';
     if (badge.dataset.state !== state) {
       badge.dataset.state = state;
-      badge.textContent = peak ? 'Clip peak · front contribution' : figure ? 'Original figure frame' : 'Front-view evidence over time';
-      badge.classList.toggle('is-peak', peak);
+      badge.textContent = figure ? 'Original figure frame' : 'Front-view evidence over time';
       badge.classList.toggle('is-figure', figure);
-    }
-    if (allowHold && !peakSeen && !motion.matches && i >= current.peakIndex && !video.paused) {
-      peakSeen = true;
-      holding = true;
-      video.pause();
-      video.currentTime = current.samples[current.peakIndex].time;
-      render(video.currentTime);
-      updatePlay();
-      holdTimer = setTimeout(() => {
-        holding = false;
-        if (visible && !document.hidden) startPlayback();
-        updatePlay();
-      }, 1800);
     }
   }
 
   function inspect(index) {
     pause();
     started = true;
-    peakSeen = true; // Scrubbing is controlled by the viewer, without an automatic hold.
     video.currentTime = current.samples[index].time;
     render(video.currentTime);
   }
@@ -133,7 +110,6 @@
   function loadCase(index) {
     pause();
     current = dataset.cases[index];
-    peakSeen = false;
     started = false;
     tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(Number(tab.dataset.frontCase) === index)));
     document.getElementById('ft-title').textContent = current.title;
@@ -148,7 +124,6 @@
       const s = current.samples[i];
       return `${s.time.toFixed(1)} s · ${s.features} features · ${s.front.toFixed(1)}% front`;
     };
-    document.getElementById('ft-peak-value').textContent = momentText(current.peakIndex);
     document.getElementById('ft-figure-value').textContent = momentText(current.figureIndex);
     charts = chartSpecs.map(buildChart);
     render(0);
@@ -168,14 +143,13 @@
       video.controls = false;
       tabs.forEach((tab) => tab.addEventListener('click', () => loadCase(Number(tab.dataset.frontCase))));
       play.addEventListener('click', () => {
-        if (holding || !video.paused) pause();
+        if (!video.paused) pause();
         else {
-          if (video.ended) { peakSeen = false; video.currentTime = 0; }
+          if (video.ended) video.currentTime = 0;
           startPlayback();
         }
       });
       seek.addEventListener('input', () => inspect(Math.round(Number(seek.value) * current.fps)));
-      document.getElementById('ft-peak').addEventListener('click', () => inspect(current.peakIndex));
       document.getElementById('ft-figure').addEventListener('click', () => inspect(current.figureIndex));
       video.addEventListener('loadedmetadata', () => {
         render(0);
@@ -189,13 +163,13 @@
       });
       if ('requestVideoFrameCallback' in video) {
         const onFrame = (_, metadata) => {
-          render(metadata.mediaTime, true);
+          render(metadata.mediaTime);
           videoFrame = video.requestVideoFrameCallback(onFrame);
         };
         videoFrame = video.requestVideoFrameCallback(onFrame);
       } else {
         const tick = () => {
-          render(video.currentTime, true);
+          render(video.currentTime);
           if (!video.paused) raf = requestAnimationFrame(tick);
         };
         video.addEventListener('play', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); });
