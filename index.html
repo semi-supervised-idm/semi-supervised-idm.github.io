@@ -280,8 +280,7 @@
     <div class="split reveal-up">
       <div class="split-text">
         <h3>Handheld grippers that mirror the robot</h3>
-        <p>Humans collect demonstrations with handheld grippers that share the finger design of the robot grippers, with wrist cameras at the same positions relative to the fingers. Both setups record left and right wrist views and a front view of the workspace.</p>
-        <p>The wrist views look alike across the two domains, so an IDM trained on robot wrist views transfers well to human videos. The front view sees a robot arm in one domain and a person in the other.</p>
+        <p>They share the robot&rsquo;s fingers and wrist-camera placement, so the <strong>wrist views look alike</strong> across domains. The <strong>front view does not</strong>: it sees a robot arm in one and a person in the other.</p>
       </div>
       <figure class="figure-card">
         <img src="assets/img/setup.webp" width="1800" height="960" alt="Human setup with handheld grippers and robot setup with two arms, each recording left wrist, front, and right wrist views." loading="lazy">
@@ -337,7 +336,7 @@
     <section class="result-group" aria-labelledby="replay-heading">
       <div class="result-head">
         <h3 id="replay-heading">Robot replay of predicted actions</h3>
-        <p>We replay the actions predicted from human demonstrations on a real robot, aligning only the initial pose. Every later waypoint chains the predicted actions, so errors accumulate without correction. Across Hanging Cup, Cap Removal, and Folding Towel, our 3-view student raises the average progress success rate from 23% with the 2-view teacher to 66%.</p>
+        <p>Actions predicted from a human video are chained and replayed on a robot without correction. Average progress success rate: <strong>23% &rarr; 66%</strong> (2-view teacher &rarr; our 3-view student).</p>
       </div>
       <figure class="figure-card reveal-up">
         <div class="figure-scroll"><img src="assets/img/replay.webp" width="2400" height="611" alt="Replay progress success rate on three tasks for four IDMs, and frames of a human Hanging Cup demonstration next to its robot replay." loading="lazy"></div>
@@ -385,7 +384,7 @@
     <section class="result-group" aria-labelledby="policy-heading">
       <div class="result-head">
         <h3 id="policy-heading">Policy learning from human demonstrations</h3>
-        <p>A flow-based policy is pretrained on 8,000 hours of human demonstrations labeled by our IDM, then fine-tuned on 100 IDM-labeled human demonstrations per task. It uses no robot data in either stage, and reaches an average progress success rate of 57.3 &plusmn; 4.4% across four tasks, close to the 70.0 &plusmn; 3.2% of the same policy fine-tuned on 100 robot demonstrations.</p>
+        <p>Trained only on IDM-labeled human demonstrations, with <strong>no robot data</strong>, the policy reaches <strong>57%</strong> average progress success, close to <strong>70%</strong> when fine-tuned on robot demonstrations.</p>
       </div>
       <figure class="figure-card reveal-up">
         <div class="figure-scroll"><img src="assets/img/policy.webp" width="2400" height="745" alt="Policy progress success rate on four tasks for policies fine-tuned on human or robot demonstrations, with frames of human demonstrations and policy rollouts." loading="lazy"></div>
@@ -397,7 +396,7 @@
       <div class="gallery-head">
         <div>
           <h3 id="videos-heading">A robot policy trained only on human data</h3>
-          <p class="gallery-lead">Each video pairs a human demonstration from the policy&rsquo;s training data (top) with a rollout of the policy on the robot (bottom). The policy learned every task from IDM-labeled human demonstrations alone and never saw a robot demonstration. Human demonstrations play in real time; each rollout is sped up by one constant factor so that the grasps and releases of the pair line up.</p>
+          <p class="gallery-lead">Top: a human demonstration from the training data. Bottom: the policy on the robot, sped up to keep pace.</p>
         </div>
         <dl class="data-recipe" aria-label="Training data of this policy">
           <div class="dr-human"><dt>Human demonstrations</dt><dd>8,000&nbsp;h pretraining + 100 per task</dd></div>

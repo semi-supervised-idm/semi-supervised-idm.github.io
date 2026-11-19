@@ -337,6 +337,7 @@ a.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 0 var(--human-light
   display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: 36px;
 }
 .result-head p { color: #3b3f48; }
+.split-text p strong, .result-head p strong, .gallery-lead strong { color: var(--ink); }
 
 .gallery-head {
   margin-bottom: 22px; padding-top: 22px;
