@@ -220,38 +220,52 @@ a.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 0 var(--human-light
 .head-infer { transition: opacity 0.2s ease 2.35s; }
 .infer text { transition: opacity 0.4s ease 1.7s; }
 
-/* --- SVG scene: semi-supervised state --- */
-/* 1. inference labels the human dots */
+/* the Inference arrow once it carries pseudo-actions (semi state; main.js bends it as the data move) */
+.pseudo-morph { opacity: 0; transition: opacity 0.35s ease; }
+.pseudo-morph .line, .pseudo-morph .head { transition: stroke 0s linear 0.4s, fill 0s linear 0.4s; }
+
+/* --- SVG scene: semi-supervised state, in causal order: pseudo-actions -> co-training -> the data mix --- */
+/* the supervised labels and the Train arrow leave */
+[data-state="semi"] .labels-sup,
+[data-state="semi"] .train text,
+[data-state="semi"] .head-train { opacity: 0; transition: opacity 0.3s ease 0.15s; }
+[data-state="semi"] .draw-train { stroke-dashoffset: 1; transition: stroke-dashoffset 0.35s ease 0.15s; }
+/* 1. pseudo-actions: the Inference arrow turns gold and is relabeled, the human dots turn gold.
+   The arrow is handed to .pseudo-morph (same shape) at the switch. */
+[data-state="semi"] .infer text { opacity: 0; transition: opacity 0.25s ease 0.2s; }
+[data-state="semi"] .infer .line,
+[data-state="semi"] .head-infer { opacity: 0; transition: none; }
+[data-state="semi"] .reveal-infer { stroke-dashoffset: 1; transition: none; }
+[data-state="semi"] .pseudo-morph { opacity: 1; transition: none; }
+[data-state="semi"] .pseudo-morph .line { stroke: var(--human-mid); transition: stroke 0.4s ease 0.2s; animation: flow 1.1s linear infinite; }
+[data-state="semi"] .pseudo-morph .head { fill: var(--human-mid); transition: fill 0.4s ease 0.2s; }
+[data-state="semi"] .pseudo text { opacity: 1; transition: opacity 0.35s ease 0.45s; }
 [data-state="semi"] .dots circle {
   fill: var(--human-light);
   transform: translate(var(--dx), var(--dy));
-  transition: fill 0.3s ease calc(0.1s + var(--i) * 55ms), transform 1.2s var(--ease) 1.2s;
+  transition: fill 0.3s ease calc(0.35s + var(--i) * 40ms), transform 1.2s var(--ease) 1.7s;
 }
-/* 2. the supervised parts leave */
-[data-state="semi"] .labels-sup,
-[data-state="semi"] .train text,
-[data-state="semi"] .infer text,
-[data-state="semi"] .head-train,
-[data-state="semi"] .head-infer,
-[data-state="semi"] .s-gap { opacity: 0; transition: opacity 0.4s ease 1s; }
-[data-state="semi"] .draw-train,
-[data-state="semi"] .reveal-infer { stroke-dashoffset: 1; transition: stroke-dashoffset 0.4s ease 1s; }
-[data-state="semi"] .gap-arrow { opacity: 0; transform: scaleY(0.1); transition: opacity 0.9s ease 1.2s, transform 1.1s var(--ease) 1.2s; }
-/* 3. robot and human data come together */
-[data-state="semi"] .human { transform: translate(0, -102px); transition: transform 1.2s var(--ease) 1.2s; }
-[data-state="semi"] .robot { transform: translate(-24px, 70.4px); transition: transform 1.2s var(--ease) 1.2s; }
-[data-state="semi"] .human-blob { fill-opacity: 0.16; transition: fill-opacity 0.9s ease 1.5s; }
-/* 4. co-training with pseudo-actions */
-[data-state="semi"] .labels-semi text { opacity: 1; transition: opacity 0.5s ease 2.3s; }
-[data-state="semi"] .s-title-semi { opacity: 1; transform: none; transition: opacity 0.5s ease 2.4s, transform 0.6s var(--ease) 2.3s; }
-[data-state="semi"] .s-title-sup { transform: translateX(var(--semi-w, 76.4px)); transition: transform 0.6s var(--ease) 2.3s; }
-[data-state="semi"] .draw-cotrain { stroke-dashoffset: 0; transition: stroke-dashoffset 0.5s var(--ease) 2.5s; }
-[data-state="semi"] .head-cotrain { opacity: 1; transition: opacity 0.2s ease 2.95s; }
-[data-state="semi"] .cotrain text { opacity: 1; transition: opacity 0.4s ease 2.5s; }
-[data-state="semi"] .reveal-pseudo { stroke-dashoffset: 0; transition: stroke-dashoffset 1s var(--ease) 2.8s; }
-[data-state="semi"] .head-pseudo { opacity: 1; transition: opacity 0.2s ease 3.75s; }
-[data-state="semi"] .pseudo text { opacity: 1; transition: opacity 0.4s ease 3.1s; }
+/* 2. co-training: "Semi-" joins the title, the Co-train arrow draws */
+[data-state="semi"] .s-title-semi { opacity: 1; transform: none; transition: opacity 0.5s ease 1s, transform 0.6s var(--ease) 0.95s; }
+[data-state="semi"] .s-title-sup { transform: translateX(var(--semi-w, 76.4px)); transition: transform 0.6s var(--ease) 0.95s; }
+[data-state="semi"] .draw-cotrain { stroke-dashoffset: 0; transition: stroke-dashoffset 0.5s var(--ease) 1s; }
+[data-state="semi"] .head-cotrain { opacity: 1; transition: opacity 0.2s ease 1.45s; }
+[data-state="semi"] .cotrain text { opacity: 1; transition: opacity 0.4s ease 1s; }
+/* 3. robot and human data come together and the embodiment gap closes */
+[data-state="semi"] .s-gap { opacity: 0; transition: opacity 0.4s ease 1.7s; }
+[data-state="semi"] .gap-arrow { opacity: 0; transform: scaleY(0.1); transition: opacity 0.9s ease 1.7s, transform 1.1s var(--ease) 1.7s; }
+[data-state="semi"] .human { transform: translate(0, -102px); transition: transform 1.2s var(--ease) 1.7s; }
+[data-state="semi"] .robot { transform: translate(-24px, 70.4px); transition: transform 1.2s var(--ease) 1.7s; }
+[data-state="semi"] .human-blob { fill-opacity: 0.16; transition: fill-opacity 0.9s ease 2s; }
+[data-state="semi"] .labels-semi text { opacity: 1; transition: opacity 0.5s ease 2.8s; }
+/* the pseudo-action loop takes over from the bent arrow once the data have arrived (main.js sets .loop-ready);
+   same shape and dash phase, so the hand-off is invisible */
+[data-state="semi"] .reveal-pseudo { stroke-dashoffset: 0; transition: none; }
+[data-state="semi"] .head-pseudo { opacity: 1; transition: none; }
 [data-state="semi"] .pseudo-line { animation: flow 1.1s linear infinite; }
+[data-state="semi"]:not(.loop-ready) .pseudo-line,
+[data-state="semi"]:not(.loop-ready) .head-pseudo { visibility: hidden; }
+[data-state="semi"].loop-ready .pseudo-morph { opacity: 0; }
 @keyframes flow { to { stroke-dashoffset: -18; } }
 
 /* ---------- Overview ---------- */

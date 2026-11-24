@@ -55,6 +55,56 @@
     fitTitle();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
 
+    // Semi state: the gold Inference arrow (.pseudo-morph) and its "pseudo-actions" label follow the human data as
+    // they move up to the robot data, and the arrow bends into the final pseudo-action loop. When the data have
+    // arrived, the loop itself takes over (.loop-ready; same shape and dash phase). Driven by the human group's
+    // actual position, so it stays in step with the CSS transition (also when it is seeked or switched off).
+    const human = scene.querySelector(".human");
+    const morphLine = scene.querySelector(".pseudo-morph .line");
+    const morphHead = scene.querySelector(".pseudo-morph .head");
+    const pseudoLabel = scene.querySelector(".pseudo text");
+    const clamp01 = (x) => Math.max(0, Math.min(1, x));
+    let morphFrame = 0;
+
+    const humanProgress = () => {
+      const m = getComputedStyle(human).transform; // matrix(1, 0, 0, 1, 0, ty), ty: 0 -> -102
+      return m && m !== "none" ? clamp01(-parseFloat(m.split(",")[5]) / 102) : 0;
+    };
+    const drawMorph = (p) => {
+      // first the bottom run drops to the loop's height and extends left, then the arrow turns up into the data
+      const a = clamp01(p / 0.65);
+      const b = clamp01((p - 0.65) / 0.35);
+      const y = 315.5 + 53.5 * a;
+      const x = 259 - 129 * a;
+      let d = `M422 256 V${y - 6} Q422 ${y} 416 ${y} H${x}`;
+      if (b > 0) {
+        const top = 363 - 70 * b;
+        d += ` Q124 369 124 363 V${top}`;
+        morphHead.setAttribute("d", `M124 ${top - 7.5} l4 9 h-8 z`);
+      } else {
+        morphHead.setAttribute("d", `M${x + 1.2} ${y - 4} l-9 4 l9 4 z`);
+      }
+      morphLine.setAttribute("d", d);
+      pseudoLabel.setAttribute("transform", `translate(${84 * (1 - p)} ${-58.7 * (1 - p)})`);
+    };
+    const followData = () => {
+      morphFrame = 0;
+      if (card.dataset.state !== "semi") return;
+      const p = humanProgress();
+      drawMorph(p);
+      if (p >= 0.999) {
+        drawMorph(1); // the label ends exactly in place
+        card.classList.add("loop-ready");
+      } else {
+        morphFrame = requestAnimationFrame(followData);
+      }
+    };
+    new MutationObserver(() => {
+      cancelAnimationFrame(morphFrame);
+      card.classList.remove("loop-ready");
+      followData();
+    }).observe(card, { attributes: true, attributeFilter: ["data-state"] });
+
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(
         ([entry]) => {
