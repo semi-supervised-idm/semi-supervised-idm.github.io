@@ -232,11 +232,13 @@
       methodFigure.classList.remove("no-anim");
 
       cards.forEach((card) => {
-        const step = Number(card.dataset.step);
-        if (!step) return; // the last card describes the result, not a stage
+        // Cards 1–3 replay from their stage; the last card fades in the complete figure at once.
+        const step = card.dataset.step === "done" ? "done" : Number(card.dataset.step);
+        if (!step) return;
+        const title = card.querySelector("h3").textContent;
         card.tabIndex = 0;
         card.setAttribute("role", "button");
-        card.setAttribute("aria-label", `Replay step ${step}: ${card.querySelector("h3").textContent}`);
+        card.setAttribute("aria-label", step === "done" ? `Show the complete figure: ${title}` : `Replay step ${step}: ${title}`);
         card.addEventListener("click", () => playFrom(step));
         card.addEventListener("keydown", (event) => {
           if (event.key !== "Enter" && event.key !== " ") return;
